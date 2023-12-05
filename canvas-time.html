@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <canvas id="myCanvas" width="500" height="500" style="border:1px solid #d3d3d3;">
+    您的浏览器不支持 HTML5 canvas 标签。</canvas>
+
+  <script>
+
+
+    var canvas = document.getElementById('myCanvas');
+
+    var ctx = canvas.getContext("2d");
+
+    setInterval(() => {
+      drawDial(ctx) //需要每秒都清除一次，防止时针多次显示
+      drawNum(ctx)
+      drawTimeFrame(ctx)
+    }, 1000)
+    // 绘制表盘
+    function drawDial(ctx) {
+      let pi = Math.PI;
+
+      ctx.clearRect(0, 0, 500, 500); //清除所有内容
+      ctx.save();
+      ctx.translate(250, 250);  //移动中心点
+
+      // 绘制时钟表盘
+      ctx.beginPath();
+      ctx.arc(0, 0, 150, 0, Math.PI * 2); //中心点x,y,r,开始角度，结束角度，是否顺时针,
+      ctx.stroke();
+      ctx.closePath();
+
+      // 绘制时钟的刻度
+      for (let i = 0; i < 60; i++) {
+        ctx.save(); //保存未绘制时针时的状态
+        ctx.rotate(-pi / 2 + i * pi / 30);  //旋转坐标轴。坐标轴x的正方形从 向上开始算起
+        // ctx.rotate(-pi/2);  // 指针在起始点 0 的未知
+
+        ctx.beginPath();
+        ctx.moveTo(135, 0);
+        ctx.lineTo(140, 0);
+        ctx.lineWidth = i % 5 == 0 ? 4 : 1;
+        ctx.strokeStyle = i % 5 == 0 ? "red" : 'black';
+        ctx.stroke();
+        ctx.closePath();
+        ctx.restore();
+      }
+      ctx.restore();
+    }
+
+    // 绘制数字
+    function drawNum(ctx) {
+      var num = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 1, 2]
+      ctx.save();
+      ctx.translate(242, 260);  //移动中心点
+      // 绘制时钟的刻度
+      for (var i = 0; i < 12; i++) {
+        ctx.save();
+        ctx.beginPath();
+        ctx.font = "20px Arial";
+        var x = Math.cos(2 * Math.PI / 12 * i) * 110;
+        var y = Math.sin(2 * Math.PI / 12 * i) * 110;
+        ctx.fillText(num[i], x, y)
+        ctx.stroke()
+        ctx.restore();
+        ctx.closePath()
+      }
+
+      ctx.restore();
+    }
+
+    // 绘制时针
+    function drawTimeFrame() {
+      let time = new Date();
+      let s = time.getSeconds();
+      let m = time.getMinutes();
+      let h = time.getHours();
+
+      let pi = Math.PI;
+      let secondAngle = pi / 30 * s;
+      let minuteAngle = pi / 30 * m + secondAngle / 60;
+      let hourAngle = pi / 6 * h + minuteAngle / 12;
+
+
+      // 绘制秒针
+      drawHand(secondAngle, 110, 2, 'red', ctx)
+      // 绘制分针
+      drawHand(minuteAngle, 90, 4, 'grey', ctx)
+      // 绘制时针
+      drawHand(hourAngle, 60, 6, 'black', ctx)
+    }
+
+
+    /*绘制时针、或分针、或秒针
+     * 参数1：要绘制的针的角度
+     * 参数2：要绘制的针的长度
+     * 参数3：要绘制的针的宽度
+     * 参数4：要绘制的针的颜色
+     * 参数4：ctx
+     * */
+    function drawHand(angle, len, width, color, ctx) {
+      ctx.save();
+      ctx.translate(250, 250);  //移动中心点
+      ctx.rotate(-Math.PI / 2 + angle);
+      ctx.beginPath();
+      ctx.moveTo(-4, 0);
+      ctx.lineTo(len, 0);
+      ctx.lineWidth = width;
+      ctx.strokeStyle = color;
+      ctx.lineCap = "round";
+      ctx.stroke();
+      ctx.closePath();
+      ctx.restore();
+    }
+
+  </script>
+</body>
+
+</html>

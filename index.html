@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>画布</title>
+</head>
+<body>
+  <canvas id="myCanvas" width="200" height="100" style="border:1px solid #d3d3d3;"></canvas>
+</body>
+
+<script>
+  var c = document.getElementById("myCanvas");
+  var ctx = c.getContext("2d");
+  ctx.moveTo(10,0); //初始位置
+  ctx.lineTo(200,100); //直线结束位置
+  ctx.stroke(); //绘制
+
+</script>
+</html>
